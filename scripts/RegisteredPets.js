@@ -1,6 +1,8 @@
 import {getPets} from "./database.js"
+import {getWalkers} from "./database.js"
 
 const pets = getPets()
+const walkers = getWalkers()
 
 document.addEventListener(
     "click",
@@ -20,7 +22,7 @@ document.addEventListener(
 
             let matchingWalker = null
             for (const walker of walkers) {
-                if (matchingPet.walkerId === walker.Id) {
+                if (matchingPet.walkerId === walker.id) {
                     matchingWalker = walker
                 }
             }
