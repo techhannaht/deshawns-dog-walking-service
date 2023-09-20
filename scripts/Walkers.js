@@ -1,6 +1,10 @@
 import { getWalkers } from "./database.js"
+import { getWalkerCities } from "./database.js"
+import { getCities } from "./database.js"
 
 const walkers = getWalkers()
+const walkerCities = getWalkerCities()
+const cities = getCities()
 
 document.addEventListener(
     "click",  // This is the type of event
@@ -38,21 +42,66 @@ document.addEventListener(
                 Now that you have the primary key of a walker object,
                 find the whole object by iterating the walkers array.
             */
-            for (const walkerObject of walkers) {
-
-                /*
-                    Compare the primary key of each walker to the one
-                    you have. As soon as you find the right one, display
-                    the window alert message.
-                */
-                if (walkerObject.id === parseInt(walkerId)) {
-                    window.alert(`${walkerObject.name} services ${walkerObject.city}`)
+                for (const walker of walkers) {
+                    if (walker.id === parseInt(walkerId)) {
+                        const assignments = filterWalkerCitiesByWalker(walker)
+                        const cities = assignedCityNames(assignments)
+                
+                        window.alert(`${walker.name} services ${cities}`)
+                    }
                 }
-            }
         }
     }
 )
 
+// The function need the walker information, so define a parameter
+const filterWalkerCitiesByWalker = (walker) => {
+    // Define an empty array to store all of the assignment objects
+    const assignments = []
+
+    // Iterate the array value of walkerCities
+    for (const assignment of walkerCities) {
+
+        // Check if the primary key of the walker equals the foreign key on the assignment
+        if (assignment.walkerId === walker.id) {
+            // If it does, add the current object to the array of assignments
+            assignments.push(assignment)
+        }
+    }
+
+    // After the loop is done, return the assignments array
+    return assignments
+}
+
+// Define a function that builds a string of city names. Needs a paramter for assignments array.
+const assignedCityNames = (assignments) => {
+    // Define an empty string that will get appended with matching cities
+    let cityNames = ""
+
+    // Iterate the array of assignment objects
+    for (const assignment of assignments) {
+
+        // For each assignment, iterate the cities array to find the match
+        for (const city of cities) {
+            if (city.id === assignment.cityId) {
+                // Add the name of the matching city to the string of city names
+                cityNames = `${cityNames} and ${city.name}`
+            }
+        }
+    }
+
+    // After the loop is done, return the string
+    return cityNames
+}
+
+for (const walker of walkers) {
+    if (walker.id === parseInt(walkerCities.walkerId)) {
+        const assignments = filterWalkerCitiesByWalker(walker)
+        const cities = assignedCityNames(assignments)
+
+        window.alert(`${walker.name} services ${cities}`)
+    }
+}
 
 export const Walkers = () => {
     let walkerHTML = "<ul>"
